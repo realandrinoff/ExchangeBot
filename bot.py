@@ -2,7 +2,7 @@ import logging
 from telegram import Update
 from telegram.ext import ApplicationBuilder, ContextTypes, CommandHandler, ConversationHandler, MessageHandler, filters
 from rate import convert
-fdf
+
 
 
 
@@ -16,28 +16,43 @@ logging.basicConfig(
 while True:
  # Start command.
 
-    AMOUNT, CURRENCY1, CURRENCY2, EXCHANGE, START = range(5)
+    AMOUNT, CURRENCY1, CURRENCY2, EXCHANGE, ERROR = range(5)
 
 
 
 
     async def amount(update: Update, context: ContextTypes.DEFAULT_TYPE):
-            global amount1
-            amount1 = update.message.text
-            print(amount1)
+            print("AMOUN")
+        
+            try:
+                amount1 = int(update.message.text)
+            except ValueError:
+                # Decimal
+                await update.message.reply_text("Error, write just the amount.")
+                
+                return EXCHANGE
+            
+            context.user_data["amount1"] = amount1
+            
+            await update.message.reply_text('Now write the currency (e.g. usd, gel, eur)')
+
+            return AMOUNT
+            print(context.amount)
             try:
                 amount1 = int(amount1)
-                await update.message.reply_text('Now write the currency (e.g. usd, gel, eur)')
                 amount1 = str(amount1)
                 return AMOUNT
             except Exception: 
                 await update.message.reply_text("Error, write just the amount.") 
-                await amount(Update, ContextTypes.DEFAULT_TYPE)
+                return EXCHANGE
                 
 
 
     async def currency1(update: Update, context: ContextTypes.DEFAULT_TYPE):
+        assert "amount1" in context.user_data
+        print("amount is:", context.user_data["amount1"])
         
+        assert False
         
         global currency_1
         currency_1 = update.message.text
@@ -55,7 +70,12 @@ while True:
             await update.message.reply_text("Error, try again through /exchange")
             await exchange(Update, ContextTypes.DEFAULT_TYPE)
         
+    async def error(update: Update, context: ContextTypes.DEFAULT_TYPE):
+        print('Error confirmed')
+        # await update.message.reply_text('You wrote something wrong, try again.')
         
+        await exchange(Update, ContextTypes.DEFAULT_TYPE)
+        return ERROR     
     async def currency2(update: Update, context: ContextTypes.DEFAULT_TYPE):
         
         global currency_2
@@ -68,6 +88,8 @@ while True:
             if len(currency_2) == 3:
                     finalresult = convert(amount1, currency_1, currency_2)
                     finalresult = str(finalresult)
+                    if finalresult == 'error':
+                        await error(Update, ContextTypes.DEFAULT_TYPE)
                     await update.message.reply_text('Your rate for ' +amount1+currency_1 + ' = '+ finalresult+ currency_2+ '.\n\n\n\nThank you for using my service! \nType anything to proceed!\n\nCredits: @andrinoff')
                     return CURRENCY2
             else:
@@ -85,14 +107,20 @@ while True:
         currency_1 = None
         currency_2 = None
         return
+
     async def exchange(update: Update, context: ContextTypes.DEFAULT_TYPE):
+        print ('Cycle started')
         amount1 = None
         currency_1 = None
         currency_2 = None
+        #try:
         await update.message.reply_text('Write AMOUNT (e.g. 20)')
+        #except:
+        #   await error(update, ContextTypes.DEFAULT_TYPE)
 
-                
         return EXCHANGE
+        
+        
 
 
     if __name__ == '__main__':
@@ -118,7 +146,7 @@ while True:
                                             CURRENCY2: [
                                                  MessageHandler(filters.TEXT, exchange)
                                             ],
-                                            START: [
+                                            ERROR: [
                                                  MessageHandler(filters.TEXT, exchange)
                                             ]
                                         },
@@ -127,3 +155,4 @@ while True:
         application.add_handler(start_handler)
         application.add_handler(exchange_handler)
         application.run_polling()
+        
