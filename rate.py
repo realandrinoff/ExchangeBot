@@ -1,4 +1,4 @@
-from currency_converter import CurrencyConverter
+
 import math
 import currencyapicom
 
