@@ -25,67 +25,96 @@ while True:
     
     async def amount(update: Update, context: ContextTypes.DEFAULT_TYPE):
         try:
+
             amount1 = update.message.text
             print(amount1)
-            context.user_data["amount"] = decimal(amount1)
-            try:
-                int(amount1)
-            except ValueError:
-                await update.message.reply_text ('Write the number')
-                return AMOUNT
-            context.user_data["amount"] = Decimal(str(amount1))
-            print (context.user_data["amount"])
-            print (isfinite(context.user_data["amount"]))
-            if isfinite(context.user_data["amount"]) == True:
-                try:
-                    await update.message.reply_text('Now write the currency (e.g. usd, gel, eur)')
-                    return CURRENCY1
-                except ValueError: 
-                    await update.message.reply_text("Error, write just the amount.") 
-                    return ERROR
-            else: 
-                await update.message.reply_text("You can't use infinity, nor NaN")
-                return AMOUNT
+            print('went through 2')
+            amount1 = str(amount1)
+            if "." in amount1:
+                amountcheck = amount1.replace(".", "")
+                if amountcheck.isnumeric() == False:
+                    await update.message.reply_text("Write just the amount")
+                    return AMOUNT 
+                else: 
+                    context.user_data["amount"] = Decimal(str(amount1))
+                    print (context.user_data["amount"])
+                    print (isfinite(context.user_data["amount"]))
+                    if isfinite(context.user_data["amount"]) == True:
+                        try:
+                            await update.message.reply_text('Now write the currency (e.g. usd, gel, eur)')
+                            return CURRENCY1
+                        except ValueError: 
+                            await update.message.reply_text("Error, write just the amount.") 
+                            return ERROR
+                        else: 
+                            await update.message.reply_text("You can't use infinity, nor NaN")
+                            return AMOUNT
+            else:
+                    if amount1.isnumeric() == False:
+                        await update.message.reply_text("Write just the amount")
+                        return AMOUNT 
+                    else: 
+                        context.user_data["amount"] = Decimal(str(amount1))
+                        print (context.user_data["amount"])
+                        print (isfinite(context.user_data["amount"]))
+                        if isfinite(context.user_data["amount"]) == True:
+                            try:
+                                await update.message.reply_text('Now write the currency (e.g. usd, gel, eur)')
+                                return CURRENCY1
+                            except ValueError: 
+                                await update.message.reply_text("Error, write just the amount.") 
+                                return ERROR
+                        else: 
+                                await update.message.reply_text("You can't use infinity, nor NaN")
+                                return AMOUNT
         except Exception as e:
             context.user_data['error'] = e
             return ERROR
     async def currency1(update: Update, context: ContextTypes.DEFAULT_TYPE):
         currency_1 = update.message.text
         currency_1 = currency_1.strip().upper()
-        print(currency_1)
-        context.user_data["currency1"] = currency_1
-
-        currency_1 = str(currency_1)
-        try:
-            if len(currency_1) == 3:
-                await update.message.reply_text ('Write the currency you want ' + str(context.user_data["amount"]) + context.user_data['currency1'] + ' in')
-                return CURRENCY2
-            else:
-                await update.message.reply_text("Error, write just the currency! (It has to be 3 letters long) (e.g USD, GEL)") 
-        except Exception as e:
-            context.user_data['error'] = e
-            return ERROR
-
-        
+        if currency_1.isalpha() == True:
+            print(currency_1)
+            context.user_data["currency1"] = currency_1
+            currency_1 = str(currency_1)
+            try:
+                if len(currency_1) == 3:
+                    await update.message.reply_text ('Write the currency you want ' + str(context.user_data["amount"]) + context.user_data['currency1'] + ' in')
+                    return CURRENCY2
+                else:
+                    await update.message.reply_text("Error, write just the currency! (It has to be 3 letters long) (e.g USD, GEL)") 
+            except Exception as e:
+                context.user_data['error'] = e
+                return ERROR
+        else:
+            await update.message.reply_text('Error, write just the currency! (It has to be 3 letters long) (e.g USD, GEL)')
+            return CURRENCY1
     async def currency2(update: Update, context: ContextTypes.DEFAULT_TYPE):
         currency_2 = update.message.text
         currency_2 = currency_2.strip().upper()
-        print(currency_2)
-        context.user_data["currency2"] = currency_2
-        currency_2 = str(currency_2)
-        try:
-            if len(currency_2) == 3:
-                    finalresult = convert(Decimal(context.user_data["amount"]), str(context.user_data["currency1"]), str(context.user_data["currency2"]))
-                    print(finalresult)
-                    finalresult = str(finalresult)
-                    await update.message.reply_text('Your rate for ' +str(context.user_data["amount"])+context.user_data["currency1"] + ' = '+ str(finalresult)+ context.user_data["currency1"]+ '.\n\n\n\nThank you for using my service! \nType anything to proceed!\n\nCredits: @andrinoff')
-                    return EXCHANGE
-            else:
-                await update.message.reply_text("Error, write just the currency! (It has to be 3 letters long) (e.g USD, GEL)") 
-        except Exception as e:
-            context.user_data['error'] = e
-            return ERROR
-
+        if currency_2.isalpha() == True:
+            print(currency_2)
+            context.user_data["currency2"] = currency_2
+            currency_2 = str(currency_2)
+            try:
+                if len(currency_2) == 3:
+                        finalresult = convert(Decimal(context.user_data["amount"]), str(context.user_data["currency1"]), str(context.user_data["currency2"]))
+                        print(finalresult)
+                        if finalresult != False:
+                            finalresult = str(finalresult)
+                            await update.message.reply_text('Your rate for ' +str(context.user_data["amount"])+context.user_data["currency1"] + ' = '+ str(finalresult)+ context.user_data["currency2"]+ '.\n\n\n\nThank you for using my service! \nType /exchange or anything to proceed!\n\nCredits: @andrinoff')
+                            return EXCHANGE
+                        else:
+                            await update.message.reply_text('You wrote something wrong, try again! /exchange or write any message')
+                            return EXCHANGE
+                else:
+                    await update.message.reply_text("Error, write just the currency! (It has to be 3 letters long) (e.g USD, GEL)") 
+            except Exception as e:
+                context.user_data['error'] = e
+                return ERROR
+        else:
+            await update.message.reply_text('Error, write just the currency! (It has to be 3 letters long) (e.g USD, GEL)')
+            return CURRENCY2
         
     async def error(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text ('An error encounted, reported \n You will start over')
