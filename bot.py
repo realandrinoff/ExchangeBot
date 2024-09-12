@@ -12,7 +12,7 @@ logging.basicConfig(
     level=logging.INFO
 )
 
-
+# fsfsdf
 while True:
     AMOUNT, CURRENCY1, CURRENCY2, EXCHANGE, ERROR = range(5)
     async def amount(update: Update, context: ContextTypes.DEFAULT_TYPE):
