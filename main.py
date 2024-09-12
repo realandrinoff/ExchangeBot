@@ -6,7 +6,7 @@ from rate import convert
 import decimal
 
 from decimal import Decimal
->>>>>>> Mac
+
 
 # This part is responsible for logging so we wouldnt skip code errors
 logging.basicConfig(
@@ -16,18 +16,15 @@ logging.basicConfig(
 
 # 
 while True:
-<<<<<<< HEAD
-    AMOUNT, CURRENCY1, CURRENCY2, EXCHANGE, ERROR = range(5)
-=======
-    # def errorreport(errors, user_id, user_name):
-    #     errorlist = open('errors.txt', "a")
-    #     errorlist.write(user_id, " AKA ", user_name, " encounted an error: ", errors)
-    #     errorlist.close()
+    def errorreport(errors, user_id, user_name):
+        errorlist = open('errors.txt', "a")
+        errorlist.write(user_id, " AKA ", user_name, " encounted an error: ", errors)
+        errorlist.close()
     AMOUNT, CURRENCY1, CURRENCY2, EXCHANGE, ERROR = range(5)
     
     
     async def amount(update: Update, context: ContextTypes.DEFAULT_TYPE):
-
+        try:
             amount1 = update.message.text
             print(amount1)
             context.user_data["amount"] = decimal(amount1)
@@ -49,7 +46,9 @@ while True:
             else: 
                 await update.message.reply_text("You can't use infinity, nor NaN")
                 return AMOUNT
-
+        except Exception as e:
+            context.user_data['error'] = e
+            return ERROR
     async def currency1(update: Update, context: ContextTypes.DEFAULT_TYPE):
         currency_1 = update.message.text
         currency_1 = currency_1.strip().upper()
@@ -63,13 +62,8 @@ while True:
                 return CURRENCY2
             else:
                 await update.message.reply_text("Error, write just the currency! (It has to be 3 letters long) (e.g USD, GEL)") 
-        except ValueError as e:
-            print(e)
-            await update.message.reply_text("Error, try again through /exchange")
-<<<<<<< HEAD
-            await exchange(update, context)
-        
-=======
+        except Exception as e:
+            context.user_data['error'] = e
             return ERROR
 
         
@@ -88,7 +82,8 @@ while True:
                     return EXCHANGE
             else:
                 await update.message.reply_text("Error, write just the currency! (It has to be 3 letters long) (e.g USD, GEL)") 
-        except Exception :
+        except Exception as e:
+            context.user_data['error'] = e
             return ERROR
 
         
@@ -110,9 +105,8 @@ while True:
             return ERROR
 
     if __name__ == '__main__':
-        # application = ApplicationBuilder().token('7307380567:AAHrnAsxUxwlg7cXWGjFvwlBS_NmoyirJ4I').build()     
-        application = ApplicationBuilder().token('6993319781:AAGPkkgWZARSMSc94FBIw9vYZ-e09eyTqoM').build()       
->>>>>>> Mac
+        application = ApplicationBuilder().token('7307380567:AAHrnAsxUxwlg7cXWGjFvwlBS_NmoyirJ4I').build()     
+        # application = ApplicationBuilder().token('6993319781:AAGPkkgWZARSMSc94FBIw9vYZ-e09eyTqoM').build()       
         exchange_handler = ConversationHandler(
             entry_points= [CommandHandler('exchange', exchange)],
                                         states = {
