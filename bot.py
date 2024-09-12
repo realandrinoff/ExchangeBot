@@ -2,7 +2,6 @@ import logging
 from telegram import Update
 from telegram.ext import ApplicationBuilder, ContextTypes, CommandHandler, ConversationHandler, MessageHandler, filters
 from rate import convert
-fd
 
 
 

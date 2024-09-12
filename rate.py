@@ -1,7 +1,7 @@
 from currency_converter import CurrencyConverter
 import math
 import currencyapicom
-fd
+
 
 def convert(amount, rate1, rate2):
     global finalresult
