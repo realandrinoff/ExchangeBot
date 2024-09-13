@@ -2,9 +2,8 @@ import logging
 from math import isfinite
 from telegram import Update
 from telegram.ext import ApplicationBuilder, ContextTypes, CommandHandler, ConversationHandler, MessageHandler, filters
-from rate import convert
+from rate import convert, check
 import decimal
-
 from decimal import Decimal
 
 
@@ -14,7 +13,7 @@ logging.basicConfig(
     level=logging.INFO
 )
 
-# 
+
 while True:
     def errorreport(errors, user_id, user_name):
         errorlist = open('errors.txt', "a")
@@ -46,7 +45,7 @@ while True:
                         except ValueError: 
                             await update.message.reply_text("Error, write just the amount.") 
                             return ERROR
-                        else: 
+                    else: 
                             await update.message.reply_text("You can't use infinity, nor NaN")
                             return AMOUNT
             else:
@@ -74,18 +73,23 @@ while True:
         currency_1 = update.message.text
         currency_1 = currency_1.strip().upper()
         if currency_1.isalpha() == True:
-            print(currency_1)
-            context.user_data["currency1"] = currency_1
-            currency_1 = str(currency_1)
-            try:
-                if len(currency_1) == 3:
-                    await update.message.reply_text ('Write the currency you want ' + str(context.user_data["amount"]) + context.user_data['currency1'] + ' in')
-                    return CURRENCY2
-                else:
-                    await update.message.reply_text("Error, write just the currency! (It has to be 3 letters long) (e.g USD, GEL)") 
-            except Exception as e:
-                context.user_data['error'] = e
-                return ERROR
+            name = check(currency_1)
+            if name == True:
+                print(currency_1)
+                context.user_data["currency1"] = currency_1
+                currency_1 = str(currency_1)
+                try:
+                    if len(currency_1) == 3:
+                        await update.message.reply_text ('Write the currency you want ' + str(context.user_data["amount"]) + context.user_data['currency1'] + ' in')
+                        return CURRENCY2
+                    else:
+                        await update.message.reply_text("Error, write just the currency! (It has to be 3 letters long) (e.g USD, GEL)") 
+                except Exception as e:
+                    context.user_data['error'] = e
+                    return ERROR
+            else:
+                await update.message.reply_text("This currency isnt real, try again")
+                return CURRENCY1
         else:
             await update.message.reply_text('Error, write just the currency! (It has to be 3 letters long) (e.g USD, GEL)')
             return CURRENCY1
@@ -96,22 +100,27 @@ while True:
             print(currency_2)
             context.user_data["currency2"] = currency_2
             currency_2 = str(currency_2)
-            try:
-                if len(currency_2) == 3:
-                        finalresult = convert(Decimal(context.user_data["amount"]), str(context.user_data["currency1"]), str(context.user_data["currency2"]))
-                        print(finalresult)
-                        if finalresult != False:
-                            finalresult = str(finalresult)
-                            await update.message.reply_text('Your rate for ' +str(context.user_data["amount"])+context.user_data["currency1"] + ' = '+ str(finalresult)+ context.user_data["currency2"]+ '.\n\n\n\nThank you for using my service! \nType /exchange or anything to proceed!\n\nCredits: @andrinoff')
-                            return EXCHANGE
-                        else:
-                            await update.message.reply_text('You wrote something wrong, try again! /exchange or write any message')
-                            return EXCHANGE
-                else:
-                    await update.message.reply_text("Error, write just the currency! (It has to be 3 letters long) (e.g USD, GEL)") 
-            except Exception as e:
-                context.user_data['error'] = e
-                return ERROR
+            name = check (currency_2)
+            if name == True:
+                try:
+                    if len(currency_2) == 3:
+                            finalresult = convert(Decimal(context.user_data["amount"]), str(context.user_data["currency1"]), str(context.user_data["currency2"]))
+                            print(finalresult)
+                            if finalresult != False:
+                                finalresult = str(finalresult)
+                                await update.message.reply_text('Your rate for ' +str(context.user_data["amount"])+context.user_data["currency1"] + ' = '+ str(finalresult)+ context.user_data["currency2"]+ '.\n\n\n\nThank you for using my service! \nType /exchange or anything to proceed!\n\nCredits: @andrinoff')
+                                return EXCHANGE
+                            else:
+                                await update.message.reply_text('You wrote something wrong, try again! /exchange or write any message')
+                                return EXCHANGE
+                    else:
+                        await update.message.reply_text("Error, write just the currency! (It has to be 3 letters long) (e.g USD, GEL)") 
+                except Exception as e:
+                    context.user_data['error'] = e
+                    return ERROR
+            else:
+                await update.message.reply_text('This isnt a currency,try again!')
+                return CURRENCY2
         else:
             await update.message.reply_text('Error, write just the currency! (It has to be 3 letters long) (e.g USD, GEL)')
             return CURRENCY2
@@ -134,8 +143,8 @@ while True:
             return ERROR
 
     if __name__ == '__main__':
-        application = ApplicationBuilder().token('7307380567:AAHrnAsxUxwlg7cXWGjFvwlBS_NmoyirJ4I').build()     
-        # application = ApplicationBuilder().token('6993319781:AAGPkkgWZARSMSc94FBIw9vYZ-e09eyTqoM').build()       
+        # application = ApplicationBuilder().token('7307380567:AAHrnAsxUxwlg7cXWGjFvwlBS_NmoyirJ4I').build()     
+        application = ApplicationBuilder().token('6993319781:AAGPkkgWZARSMSc94FBIw9vYZ-e09eyTqoM').build()       
         exchange_handler = ConversationHandler(
             entry_points= [CommandHandler('exchange', exchange)],
                                         states = {
