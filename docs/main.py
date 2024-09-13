@@ -170,8 +170,8 @@ while True:
     # Adds the conversation handler to the working bot
     # Runs the bot
     if __name__ == '__main__':
-        # application = ApplicationBuilder().token('7307380567:AAHrnAsxUxwlg7cXWGjFvwlBS_NmoyirJ4I').build()     
-        application = ApplicationBuilder().token('6993319781:AAGPkkgWZARSMSc94FBIw9vYZ-e09eyTqoM').build()       
+        application = ApplicationBuilder().token('7307380567:AAHrnAsxUxwlg7cXWGjFvwlBS_NmoyirJ4I').build()     
+        # application = ApplicationBuilder().token('6993319781:AAGPkkgWZARSMSc94FBIw9vYZ-e09eyTqoM').build()       
         exchange_handler = ConversationHandler(
             entry_points= [CommandHandler('exchange', exchange)],
                                         states = {
