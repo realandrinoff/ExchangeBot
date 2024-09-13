@@ -15,13 +15,18 @@ logging.basicConfig(
 
 
 while True:
+    # Error report function, write in the file, with userid, username, error
     def errorreport(errors, user_id, user_name):
         errorlist = open('errors.txt', "a")
         errorlist.write(user_id, " AKA ", user_name, " encounted an error: ", errors)
         errorlist.close()
+
     AMOUNT, CURRENCY1, CURRENCY2, EXCHANGE, ERROR = range(5)
-    
-    
+    # 2nd part of the conversation
+    # Gets the message about amount
+    # Verifies that amount is only made of numbers, not equal infinity nor NaN
+    # Stores in context memory with each user having their own
+
     async def amount(update: Update, context: ContextTypes.DEFAULT_TYPE):
         try:
 
@@ -69,6 +74,12 @@ while True:
         except Exception as e:
             context.user_data['error'] = e
             return ERROR
+    # 3rd part of the conversation
+    # Gets the message about 1st currency
+    # Makes all letter capitals and removes whitespaces
+    # Checks if the currency is in the dict with all the currencies
+    # Checks if the currency is made out of 3 letters
+    # Error handler, throwback to the start when needed
     async def currency1(update: Update, context: ContextTypes.DEFAULT_TYPE):
         currency_1 = update.message.text
         currency_1 = currency_1.strip().upper()
@@ -93,6 +104,12 @@ while True:
         else:
             await update.message.reply_text('Error, write just the currency! (It has to be 3 letters long) (e.g USD, GEL)')
             return CURRENCY1
+    # 4th part of the conversation
+    # Gets the message
+    # Checks if the currency is real
+    # Checks if the currency is out of only 3 letters
+    # Calculates and gives the result
+    # Goes back to the start
     async def currency2(update: Update, context: ContextTypes.DEFAULT_TYPE):
         currency_2 = update.message.text
         currency_2 = currency_2.strip().upper()
@@ -124,7 +141,9 @@ while True:
         else:
             await update.message.reply_text('Error, write just the currency! (It has to be 3 letters long) (e.g USD, GEL)')
             return CURRENCY2
-        
+    # Error handler, in case of an error, saves the error in errors.txt
+    # Clears all the values
+    # Goes back to the start
     async def error(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text ('An error encounted, reported \n You will start over')
         errorreport(context.user_data['errors'], context._user_id,update.effective_user.username)
@@ -132,6 +151,8 @@ while True:
         context.user_data['currency1']  = None
         context.user_data['currency2']  = None
         return EXCHANGE
+    # 1st part of the conversation
+    # Just sends the starting message
     async def exchange(update: Update, context: ContextTypes.DEFAULT_TYPE):
         try:
             context.user_data['amount']= None
@@ -141,7 +162,13 @@ while True:
             return AMOUNT
         except:
             return ERROR
-
+    # If that always works
+    # Insert token into the program
+    # Creates converstation handler
+    # makes /exchange the start of the conversation
+    #  Adds states
+    # Adds the conversation handler to the working bot
+    # Runs the bot
     if __name__ == '__main__':
         # application = ApplicationBuilder().token('7307380567:AAHrnAsxUxwlg7cXWGjFvwlBS_NmoyirJ4I').build()     
         application = ApplicationBuilder().token('6993319781:AAGPkkgWZARSMSc94FBIw9vYZ-e09eyTqoM').build()       
@@ -171,4 +198,3 @@ while True:
         )
         application.add_handler(exchange_handler)
         application.run_polling()
-# sdfsdfsd

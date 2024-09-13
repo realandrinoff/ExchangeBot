@@ -3,7 +3,9 @@ import currencyapicom
 import decimal
 from decimal import getcontext, Decimal
 
-
+# Function that strips down all the currencies from useless data
+# Checks if the entered data is in the dict
+# Returns False, if it isnt, True, if it is
 def check(currency):
     client = currencyapicom.Client('cur_live_b8rb8eMo1xzDTDdZDHdMEKh0dwy6YfmFYRDTFdHb')
     allcurrencies = client.currencies().get("data")
@@ -17,7 +19,11 @@ def check(currency):
 
 
 
-
+# The conversion and calculation of the result
+# Imports data from currencyapi 
+# Uses decimal for more accurate results
+# Returns result
+# Error handlers returns False if the result if bugged, or errored
 def convert(amount, rate1, rate2):
             try:
                 getcontext().prec = 999
@@ -57,6 +63,3 @@ def convert(amount, rate1, rate2):
             except Exception as e:
                 print (e)
                 return False 
-
-# sfdjls;fjdsf
-# convert(100, "RUB", "POP")
