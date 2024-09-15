@@ -5,8 +5,12 @@ from telegram.ext import ApplicationBuilder, ContextTypes, CommandHandler, Conve
 from rate import convert, check
 import decimal
 from decimal import Decimal
+import sqlite3
+from keys  import main, test
 
-
+con = sqlite3.connect("language.db")
+cur = con.cursor()
+cur.execute("CREATE TABLE IF NOT EXISTS data(id INTEGER, language TEXT)")
 # This part is responsible for logging so we wouldnt skip code errors
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -22,11 +26,11 @@ while True:
         errorlist.close()
 
     AMOUNT, CURRENCY1, CURRENCY2, EXCHANGE, ERROR = range(5)
+
     # 2nd part of the conversation
     # Gets the message about amount
     # Verifies that amount is only made of numbers, not equal infinity nor NaN
     # Stores in context memory with each user having their own
-
     async def amount(update: Update, context: ContextTypes.DEFAULT_TYPE):
         try:
 
@@ -74,6 +78,7 @@ while True:
         except Exception as e:
             context.user_data['error'] = e
             return ERROR
+        
     # 3rd part of the conversation
     # Gets the message about 1st currency
     # Makes all letter capitals and removes whitespaces
@@ -104,6 +109,7 @@ while True:
         else:
             await update.message.reply_text('Error, write just the currency! (It has to be 3 letters long) (e.g USD, GEL)')
             return CURRENCY1
+        
     # 4th part of the conversation
     # Gets the message
     # Checks if the currency is real
@@ -141,6 +147,7 @@ while True:
         else:
             await update.message.reply_text('Error, write just the currency! (It has to be 3 letters long) (e.g USD, GEL)')
             return CURRENCY2
+        
     # Error handler, in case of an error, saves the error in errors.txt
     # Clears all the values
     # Goes back to the start
@@ -151,6 +158,7 @@ while True:
         context.user_data['currency1']  = None
         context.user_data['currency2']  = None
         return EXCHANGE
+    
     # 1st part of the conversation
     # Just sends the starting message
     async def exchange(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -162,6 +170,28 @@ while True:
             return AMOUNT
         except:
             return ERROR
+    
+    async def rus(update: Update, context: ContextTypes.DEFAULT_TYPE):
+        try:
+            cur.execute("INSTERT INTO data VALUES (?, 'rus')", update.effective_user.username)
+            con.commit()
+            update.message.reply_text('Успешно изменен язык!')
+        except:
+            pass
+    async def eng(update: Update, context: ContextTypes.DEFAULT_TYPE):
+        try:
+            cur.execute("INSTERT INTO data VALUES (?, 'eng')", update.effective_user.username)
+            con.commit()
+            update.message.reply_text('Мову встановлено успішно!!')
+        except:
+            pass
+    async def ukr(update: Update, context: ContextTypes.DEFAULT_TYPE):
+            try:
+                cur.execute("INSTERT INTO data VALUES (?, 'ukr')", update.effective_user.username)
+                con.commit()
+                update.message.reply_text('Успешно изменен язык')
+            except:
+                pass
     # If that always works
     # Insert token into the program
     # Creates converstation handler
@@ -170,8 +200,11 @@ while True:
     # Adds the conversation handler to the working bot
     # Runs the bot
     if __name__ == '__main__':
-        application = ApplicationBuilder().token('7307380567:AAHrnAsxUxwlg7cXWGjFvwlBS_NmoyirJ4I').build()     
-        # application = ApplicationBuilder().token('6993319781:AAGPkkgWZARSMSc94FBIw9vYZ-e09eyTqoM').build()       
+        # application = ApplicationBuilder().token(main).build()     
+        application = ApplicationBuilder().token(test).build() 
+        rus_handler = CommandHandler("rus", rus)     
+        eng_handler = CommandHandler("eng", eng)
+        ukr_handler = CommandHandler("ukr", ukr) 
         exchange_handler = ConversationHandler(
             entry_points= [CommandHandler('exchange', exchange)],
                                         states = {
@@ -196,5 +229,9 @@ while True:
                                         },
                                         fallbacks= [CommandHandler("exchange", exchange)],
         )
+        application.add_handler(rus_handler)
+        application.add_handler(eng_handler)
+        application.add_handler(ukr_handler)
         application.add_handler(exchange_handler)
+
         application.run_polling()
