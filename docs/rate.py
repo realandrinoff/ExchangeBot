@@ -2,12 +2,14 @@ import math
 import currencyapicom
 import decimal
 from decimal import getcontext, Decimal
+from keys import currency_api
 
 # Function that strips down all the currencies from useless data
 # Checks if the entered data is in the dict
 # Returns False, if it isnt, True, if it is
 def check(currency):
-    client = currencyapicom.Client('cur_live_b8rb8eMo1xzDTDdZDHdMEKh0dwy6YfmFYRDTFdHb')
+    global client
+    client = currencyapicom.Client(currency_api)
     allcurrencies = client.currencies().get("data")
     print(allcurrencies)
     if currency in allcurrencies:
@@ -28,7 +30,7 @@ def convert(amount, rate1, rate2):
             try:
                 getcontext().prec = 999
                 
-                client = currencyapicom.Client('cur_live_b8rb8eMo1xzDTDdZDHdMEKh0dwy6YfmFYRDTFdHb')
+                
 
 
 
