@@ -214,8 +214,8 @@ async def ukr(update: Update, context: ContextTypes.DEFAULT_TYPE):
 # Adds the conversation handler to the working bot
 # Runs the bot
 if __name__ == '__main__':
-    # application = ApplicationBuilder().token(main).build()     
-    application = ApplicationBuilder().token(test).build() 
+    application = ApplicationBuilder().token(main).build()     
+    # application = ApplicationBuilder().token(test).build() 
     rus_handler = CommandHandler("rus", rus)     
     eng_handler = CommandHandler("eng", eng)
     ukr_handler = CommandHandler("ukr", ukr) 
