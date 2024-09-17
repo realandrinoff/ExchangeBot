@@ -1,6 +1,7 @@
 import logging
 from math import isfinite
 from telegram import Update
+
 from telegram.ext import ApplicationBuilder, ContextTypes, CommandHandler, ConversationHandler, MessageHandler, filters, Updater
 from rate import convert, check
 import decimal
@@ -164,12 +165,11 @@ async def error(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def exchange(update: Update, context: ContextTypes.DEFAULT_TYPE):
     print('exchange test0')
     try:
-        print('exchange test1')
-        language = d.findlanguage(update.effective_user.username)
-        language = list(language)
-        print(type(language))
-        context.user_data['language'] = ''.join(["".join(lang) for lang in language])
-        print("exchange test2")
+        try:
+            language = d.findlanguage(update.effective_user.username)
+            context.user_data['language'] = ''.join(["".join(lang) for lang in language])
+        except:
+            context.user_data["language"] = 'eng'
         print (context.user_data['language'])
         context.user_data['amount']= None
         context.user_data['currency1'] = None
@@ -188,6 +188,7 @@ async def rus(update: Update, context: ContextTypes.DEFAULT_TYPE):
     try:
         d.addlanguage(update.effective_user.username, "rus")
         await update.message.reply_text('Успешно изменен язык!')
+        context.user_data["language"] = "rus"
         return EXCHANGE
     except Exception as e:
         print(e)
@@ -195,6 +196,7 @@ async def eng(update: Update, context: ContextTypes.DEFAULT_TYPE):
     try:
         d.addlanguage(update.effective_user.username, "eng")
         await update.message.reply_text('Language set successfully!')
+        context.user_data["language"] = "eng"
         return EXCHANGE
     except Exception as e:
         print(e)
@@ -203,9 +205,35 @@ async def ukr(update: Update, context: ContextTypes.DEFAULT_TYPE):
         print(update.effective_user.username)
         d.addlanguage(update.effective_user.username, "ukr")
         await update.message.reply_text('Мову встановлено успішно!')
+        context.user_data["language"] = "ukr"
         return EXCHANGE
     except Exception as e:
         print(e)
+async def kar(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    try:
+        print(update.effective_user.username)
+        d.addlanguage(update.effective_user.username, "kar")
+        await update.message.reply_text('ენა გადმოწერილია')
+        context.user_data["language"] = "kar"
+        return EXCHANGE
+    except Exception as e:
+        print(e)
+async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+
+    try:
+        language = d.findlanguage(update.effective_user.username)
+        context.user_data['language'] = ''.join(["".join(lang) for lang in language])
+    except:
+        context.user_data["language"] = 'eng'
+    await update.message.reply_text(translate(context.user_data["language"], "start"), parse_mode="HTML")
+async def credits(update:Update, context: ContextTypes.DEFAULT_TYPE):
+    try:
+        language = d.findlanguage(update.effective_user.username)
+        context.user_data['language'] = ''.join(["".join(lang) for lang in language])
+    except:
+        context.user_data["language"] = 'eng'
+
+    await update.message.reply_text(translate(context.user_data["language"], "credits"), parse_mode="HTML")
 # If that always works
 # Insert token into the program
 # Creates converstation handler
@@ -214,11 +242,15 @@ async def ukr(update: Update, context: ContextTypes.DEFAULT_TYPE):
 # Adds the conversation handler to the working bot
 # Runs the bot
 if __name__ == '__main__':
+    
     application = ApplicationBuilder().token(main).build()     
     # application = ApplicationBuilder().token(test).build() 
+    start_handler = CommandHandler("start", start)
+    credits_handler = CommandHandler("credits", credits)
     rus_handler = CommandHandler("rus", rus)     
     eng_handler = CommandHandler("eng", eng)
     ukr_handler = CommandHandler("ukr", ukr) 
+    kar_handler = CommandHandler("kar", kar)
     exchange_handler = ConversationHandler(
         entry_points= [CommandHandler('exchange', exchange)],
                                     states = {
@@ -248,5 +280,8 @@ if __name__ == '__main__':
     application.add_handler(eng_handler)
     application.add_handler(ukr_handler)
     application.add_handler(exchange_handler)
+    application.add_handler(start_handler)
+    application.add_handler(credits_handler)
+    application.add_handler(kar_handler)
     application.run_polling()
 
