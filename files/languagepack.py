@@ -38,3 +38,14 @@ rus = {
     "error": 'Ошибка! \n Вы начнете сначала',
     "stop": "Вы остановили бота. \n\n Вы можете продолжить, когда хотите с /exchange"
 }
+
+def translate(language, step):
+    if language == "ukr":
+        phrase = str(ukr.get(step))
+        return phrase
+    if language == "rus":
+        phrase = str(rus.get(step))
+        return phrase
+    if language == "eng":  
+        phrase = str(eng.get(step))
+        return phrase
