@@ -5,14 +5,16 @@ def __init__():
     global cur
     con = sqlite3.connect("language.db")
     cur = con.cursor()
-    cur.execute("CREATE TABLE IF NOT EXISTS data(id TEXT, language TEXT)") 
+    cur.execute("CREATE TABLE IF NOT EXISTS data(id INTEGER, language TEXT)") 
     con.commit()
 def findlanguage(username):
-    global lang
     lang = list(cur.execute("SELECT language FROM data WHERE id = ?", [username]).fetchall())
     print(type(lang))
     return lang
-
+def clientlist():
+    users = cur.execute("SELECT id FROM data").fetchone()
+    print(type(users))
+    return users
 
 def addlanguage(username, language):
     print ("test-1")
