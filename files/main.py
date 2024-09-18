@@ -22,9 +22,9 @@ administrators = ["@andrinoff"]
 
 
 # Error report function, write in the file, with userid, username, error
-def errorreport(errors, user_id, user_name):
+def errorreport(errors, user_id, name, language):
     errorlist = open('errors.txt', "a")
-    errorlist.write(user_id, " AKA ", user_name, " encounted an error: ", errors)
+    errorlist.write(user_id, " AKA ", name, " encounted an error: ", errors, ". Language -- ", language)
     errorlist.close()
 
 AMOUNT, CURRENCY1, CURRENCY2, EXCHANGE, ERROR = range(5)
@@ -36,8 +36,6 @@ AMOUNT, CURRENCY1, CURRENCY2, EXCHANGE, ERROR = range(5)
 async def amount(update: Update, context: ContextTypes.DEFAULT_TYPE):
     try:
         amount1 = update.message.text
-        print(amount1)
-        print('went through 2')
         amount1 = str(amount1)
         if "." in amount1:
             amountcheck = amount1.replace(".", "")
@@ -46,8 +44,6 @@ async def amount(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 return AMOUNT 
             else: 
                 context.user_data["amount"] = Decimal(str(amount1))
-                print (context.user_data["amount"])
-                print (isfinite(context.user_data["amount"]))
                 if isfinite(context.user_data["amount"]) == True:
                     try:
                         await update.message.reply_text(translate(context.user_data["language"], "currency1"))
@@ -64,8 +60,6 @@ async def amount(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     return AMOUNT 
                 else: 
                     context.user_data["amount"] = Decimal(str(amount1))
-                    print (context.user_data["amount"])
-                    print (isfinite(context.user_data["amount"]))
                     if isfinite(context.user_data["amount"]) == True:
                         try:
                             await update.message.reply_text(translate(context.user_data["language"], "currency1"))
@@ -78,7 +72,6 @@ async def amount(update: Update, context: ContextTypes.DEFAULT_TYPE):
                             return AMOUNT
     except Exception as e:
         context.user_data['error'] = e
-        print(e)
         return ERROR
     
 # 3rd part of the conversation
@@ -93,7 +86,6 @@ async def currency1(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if currency_1.isalpha() == True:
         name = check(currency_1)
         if name == True:
-            print(currency_1)
             context.user_data["currency1"] = currency_1
             currency_1 = str(currency_1)
             try:
@@ -122,7 +114,6 @@ async def currency2(update: Update, context: ContextTypes.DEFAULT_TYPE):
     currency_2 = update.message.text
     currency_2 = currency_2.strip().upper()
     if currency_2.isalpha() == True:
-        print(currency_2)
         context.user_data["currency2"] = currency_2
         currency_2 = str(currency_2)
         name = check (currency_2)
@@ -130,7 +121,6 @@ async def currency2(update: Update, context: ContextTypes.DEFAULT_TYPE):
             try:
                 if len(currency_2) == 3:
                         finalresult = convert(Decimal(context.user_data["amount"]), str(context.user_data["currency1"]), str(context.user_data["currency2"]))
-                        print(finalresult)
                         if finalresult != False:
                             finalresult = str(finalresult)
                             await update.message.reply_text(translate(context.user_data["language"], "result.1") +str(context.user_data["amount"])+context.user_data["currency1"] + ' = '+ str(finalresult)+ context.user_data["currency2"]+ translate(context.user_data["language"], "result.2"))
@@ -155,7 +145,7 @@ async def currency2(update: Update, context: ContextTypes.DEFAULT_TYPE):
 # Goes back to the start
 async def error(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text (translate(context.user_data["language"], "error"))
-    errorreport(context.user_data['errors'], context._user_id,update.effective_user.username)
+    errorreport(context.user_data['error'], update.message.chat.id, update.effective_user.full_name, context.user_data['language'])
     context.user_data['amount'] = None
     context.user_data['currency1']  = None
     context.user_data['currency2']  = None
@@ -164,21 +154,18 @@ async def error(update: Update, context: ContextTypes.DEFAULT_TYPE):
 # 1st part of the conversation
 # Just sends the starting message
 async def exchange(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    print('exchange test0')
     try:
         try:
             language = d.findlanguage(update.message.chat.id)
             context.user_data['language'] = ''.join(["".join(lang) for lang in language])
         except:
             context.user_data["language"] = 'eng'
-        print (context.user_data['language'])
         context.user_data['amount']= None
         context.user_data['currency1'] = None
         context.user_data['currency2'] = None
         await update.message.reply_text(translate(context.user_data["language"], "amount"))         
         return AMOUNT
     except Exception as e:
-        print(e)
         return ERROR
 async def stop(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(translate(context.user_data["language"], "stop"))
@@ -192,7 +179,7 @@ async def rus(update: Update, context: ContextTypes.DEFAULT_TYPE):
         context.user_data["language"] = "rus"
         return EXCHANGE
     except Exception as e:
-        print(e)
+        pass
 async def eng(update: Update, context: ContextTypes.DEFAULT_TYPE):
     try:
         d.addlanguage(update.message.chat.id, "eng")
@@ -200,25 +187,23 @@ async def eng(update: Update, context: ContextTypes.DEFAULT_TYPE):
         context.user_data["language"] = "eng"
         return EXCHANGE
     except Exception as e:
-        print(e)
+        pass
 async def ukr(update: Update, context: ContextTypes.DEFAULT_TYPE):
     try:
-        print(update.message.chat.id)
         d.addlanguage(update.message.chat.id, "ukr")
         await update.message.reply_text('Мову встановлено успішно!')
         context.user_data["language"] = "ukr"
         return EXCHANGE
     except Exception as e:
-        print(e)
+        pass
 async def kar(update: Update, context: ContextTypes.DEFAULT_TYPE):
     try:
-        print(update.message.chat.id)
         d.addlanguage(update.message.chat.id, "kar")
         await update.message.reply_text('ენა გადმოწერილია')
         context.user_data["language"] = "kar"
         return EXCHANGE
     except Exception as e:
-        print(e)
+        pass
 #  Start command
 # Quick tour through the bot usage
 # Has a mechanism that checks if the user is registered in the system, if is, types the message in the language user is connected to 
@@ -254,9 +239,7 @@ async def sendall(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if context.user_data["admin"] == True:
         msg = "".join(context.args)
         clients = d.clientlist()
-        print(clients)
         for x in clients:
-            print(x)
             await context.bot.send_message(x, msg)
     else:
         await update.message.reply_text("You are not an admin")
@@ -303,7 +286,7 @@ if __name__ == '__main__':
                                         ]
                                     },
                                     fallbacks= [CommandHandler("stop", stop),
-                                                MessageHandler(filters.COMMAND, exchange),],
+                                                MessageHandler(filters.COMMAND, exchange)],
     )
 
     application.add_handler(rus_handler)
