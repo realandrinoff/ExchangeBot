@@ -1,7 +1,6 @@
 import logging
 from math import isfinite
 from telegram import Update
-
 from telegram.ext import ApplicationBuilder, ContextTypes, CommandHandler, ConversationHandler, MessageHandler, filters, Updater
 from rate import convert, check
 import decimal
@@ -220,8 +219,10 @@ async def kar(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return EXCHANGE
     except Exception as e:
         print(e)
+#  Start command
+# Quick tour through the bot usage
+# Has a mechanism that checks if the user is registered in the system, if is, types the message in the language user is connected to 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-
     try:
         language = d.findlanguage(update.message.chat.id)
         context.user_data['language'] = ''.join(["".join(lang) for lang in language])
@@ -301,7 +302,8 @@ if __name__ == '__main__':
                                                 MessageHandler(filters.TEXT & (~ filters.COMMAND), error)
                                         ]
                                     },
-                                    fallbacks= [MessageHandler(filters.COMMAND, stop)],
+                                    fallbacks= [CommandHandler("stop", stop),
+                                                MessageHandler(filters.COMMAND, exchange),],
     )
 
     application.add_handler(rus_handler)
