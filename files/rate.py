@@ -15,11 +15,6 @@ def check(currency):
         return True
     else:
         return False
-
-
-
-
-
 # The conversion and calculation of the result
 # Imports data from currencyapi 
 # Uses decimal for more accurate results
@@ -31,8 +26,6 @@ def convert(amount, rate1, rate2):
         result = client.latest(rate1,currencies=[rate2])
         val1 = result.get('data')
         val2 = val1.get(rate2)
-
-
         val = val2.get("value")
         val = str(val)
         finalresult = Decimal(val) * Decimal(str(amount))

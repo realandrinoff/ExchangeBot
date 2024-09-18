@@ -18,7 +18,7 @@ logging.basicConfig(
 )
 
 
-administrators = ["@andrinoff"]
+administrators = ["andrinoff"]
 
 
 # Error report function, write in the file, with userid, username, error
@@ -223,16 +223,19 @@ async def credits(update:Update, context: ContextTypes.DEFAULT_TYPE):
 
     await update.message.reply_text(translate(context.user_data["language"], "credits"), parse_mode="HTML")
 async def admin(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    if update.effective_user.username == "andrinoff":
-        context.bot.delete_message(update.message.chat_id, update.message.message_id)
+    if update.effective_user.username in administrators:
+        await context.bot.delete_message(update.message.chat_id, update.message.message_id)
         context.user_data["admin"] =  True
         await update.message.reply_text('You are logged in')
     else:
-        if context.args() == admin_password:
-            context.bot.delete_message(update.message.chat_id, update.message.message_id)
+        password = str("".join(context.args))
+        print(password)
+        if password == admin_password:
+            await context.bot.delete_message(update.message.chat_id, update.message.message_id)
             context.user_data["admin"] = False
             await update.message.reply_text("You are currently logged in")
         else:
+            await context.bot.delete_message(update.message.chat_id, update.message.message_id)
             context.user_data["admin"] = False
             await update.message.reply_text("You don't have the administrator rights")
 async def sendall(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -245,6 +248,7 @@ async def sendall(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text("You are not an admin")
 async def logout(update: Update, context: ContextTypes.DEFAULT_TYPE):
     context.user_data["admin"] = False
+    update.message.reply_text('You logged out successfully, ', update.effective_user.name)
 # If that always works
 # Insert token into the program
 # Creates converstation handler
@@ -288,7 +292,6 @@ if __name__ == '__main__':
                                     fallbacks= [CommandHandler("stop", stop),
                                                 MessageHandler(filters.COMMAND, exchange)],
     )
-
     application.add_handler(rus_handler)
     application.add_handler(eng_handler)
     application.add_handler(ukr_handler)
