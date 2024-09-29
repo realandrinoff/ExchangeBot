@@ -13,6 +13,7 @@ eng = {
     "stop": "The bot was stopped. \n\n You can proceed anytime by /exchange",
     "credits": "<b>Credits:</b>\n\n <b>Code:</b> <a href = 'https://linktr.ee/andrinoff'>Andrey Smirnoff </a> \n\n<b>Translators:</b>\n<i>Ukranian, Russian, English: </i><a href = 'https://linktr.ee/andrinoff'>Andrey Smirnoff</a>\nGeorgian: <a href = 'https://www.facebook.com/nino.iva.9'>Nino Dartsmelia</a>"
 }
+
 ukr = {
     "start": "Привіт! Ласкаво просимо до мого бота! \n\n<b>Хто я?</b> \nЯ студент, який розробив цей проект на уроках економіки.\n\n<b>Як цим користуватися?</b>\nЩоб почати використовувати / exchange, також використовуйте /rus, /ukr для зміни мови. \n\n<b>КОНТАКТИ</b>\n@andrinoff у всіх соціальних мережах",
     "amount": "Напишіть СУМУ (наприклад, 20)",
@@ -27,8 +28,8 @@ ukr = {
     "error": 'Виявлено помилку, повідомлено\n Ви почнете спочатку',
     "stop": "Роботу бота було зупинено.\n\n Ви можете будь-коли продовжити за допомогою /exchange",
     "credits": "<b>Credits:</b>\n\n <b>Код:</b> <a href = 'https://linktr.ee/andrinoff'>Андрій Смирнов </a> \n\n<b>Перекладачі:</b>\n<i>Українська, Російська, Англійська: </i><a href = 'https://linktr.ee/andrinoff'>Андрій Смирнов</a>\nГрузинський: <a href = 'https://www.facebook.com/nino.iva.9'>Ніно Дарцмелія </a>"
-
 }
+
 rus = {
     "start": "Привет! Добро пожаловать в мой бот! \n\n<b>Кто я?</b> \nЯ студент, который разработал этот проект на уроках экономики.\n\n<b>Как этим пользоваться?</b>\nЧтобы начать, используйте /exchange, также используйте /rus, /ukr, чтобы изменить язык. \n\n<b>КОНТАКТЫ</b>\n@andrinoff во всех социальных сетях",
     "amount": "Напишите кол-во (например, 20)",
@@ -44,6 +45,7 @@ rus = {
     "stop": "Вы остановили бота. \n\n Вы можете продолжить, когда хотите с /exchange",
     "credits": "<b>Credits:</b>\n\n<b>Код:</b> <a href = 'https://linktr.ee/andrinoff'>Андрей Смирнов </a> \n\n<b>Переводчики:</b>\n<i>Украинский, Русский, Английский: </i><a href = 'https://linktr.ee/andrinoff'>Андрей Смирнов</a>\nქართ: <a href = 'https://www.facebook.com/nino.iva.9'>Нино Дарцмелия</a>"
 }
+
 kar = {
     "start": "გამარჯობა! კეთილი იყოს თქვენი მობრძანება ჩემს ბოტში. \n\n <b>ვინ ვარ?</b> \nმე ვარ სტუდენტი, რომელმაც შექმნა ეს პროექტი ეკონომიკის გაკვეთილზე. \n\n<b>როგორ შეგიძლიათ გამოიყენოთ?</b> \nდასაწყებად აირჩიეთ /exchange, აგრეთვე გამოიყენეთ /rus, /eng, /ukr, /kar ენის შესაცვლელად. \n\n<b>კონტაქტი</b> \n@andrinoff ყველა სოციალურ მედიაში.",
     "amount": "დაწერეთ თანხა (მაგ. 20)",
@@ -58,20 +60,14 @@ kar = {
     "error": 'დაფიქსირდა ხარვეზი, ინფორმაცია. \n\nმიწოდებულია /exchange თავიდან ',
     "stop": "ბოტმა შეწყვიტა მუშაობა. \n\nგასაგრძელებლად დააწექით /exchange.",
     "credits": "<b>მადლობას ვუხდით:</b>\n\n<b>კოდი:</b> <a href = 'https://linktr.ee/andrinoff'>ანდრეი სმირნოვი</a> \n\n<b>მთარგმნელები: </b>\n<i>უკრაინული, რუსული, ინგლისური: </i><a href = 'https://linktr.ee/andrinoff'>ანდრეი სმირნოვი</a>\nქართულად: <a href = 'https://www.facebook.com/nino.iva.9'>ნინო დარცმელია</a>"
-
 }
 
+languages = {
+    "ukr": ukr,
+    "rus": rus,
+    "eng": eng,
+    "kar": kar
+}
 
 def translate(language, step):
-    if language == "ukr":
-        phrase = str(ukr.get(step))
-        return phrase
-    if language == "rus":
-        phrase = str(rus.get(step))
-        return phrase
-    if language == "eng":  
-        phrase = str(eng.get(step))
-        return phrase
-    if language == "kar":  
-        phrase = str(kar.get(step))
-        return phrase
+    return str(languages.get(language, eng).get(step, "no translation"))
