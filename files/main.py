@@ -232,7 +232,7 @@ async def logout(update: Update, context: ContextTypes.DEFAULT_TYPE):
 # Runs the bot
 if __name__ == '__main__':
     # application = ApplicationBuilder().token(main).build()
-    application = ApplicationBuilder().token(test).build()
+    application = ApplicationBuilder().token(main).build()
     exchange_handler = ConversationHandler(
         entry_points=[CommandHandler('exchange', exchange)],
         states={
@@ -261,7 +261,7 @@ if __name__ == '__main__':
             ("rus", language_func("rus", "Успешно изменен язык!")),
             ("eng", language_func("eng", "Language set successfully!")),
             ("ukr", language_func("ukr", "Мову встановлено успішно!")),
-            ("kar", language_func("kar", "ენა გადმოწერილია")),
+            ("qar", language_func("kar", "ენა გადმოწერილია")),
             ("start", start), ("credits", credits), ("admin", admin), ("sendall", sendall),
         ]:
         application.add_handler(CommandHandler(name, handlerFunc))
