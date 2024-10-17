@@ -10,7 +10,8 @@
 * Go to files with the main file ```cd ./files```
 * Run the main file ```python main.py```
 
-<br /> # Credits
+<br /> 
+# Credits
 * Main programmer: @andrinoff 
 * Helper: @smira
 * Translation:<br /> <a href = 'https://linktr.ee/andrinoff'>Andrey Smirnoff </a> (RUS, UKR, ENG) & <a href = 'https://www.facebook.com/nino.iva.9'>Nino Dartsmelia</a> (GEO)
