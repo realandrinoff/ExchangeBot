@@ -1,5 +1,5 @@
 # Welcome! 
-## This is an open-sourced telegram bot for exchange rates in real time (accessible on @geoexchangebot)
+## This is an open-sourced telegram bot for exchange rates in real time (accessible on @tg_easy_converter_bot)
 ### How to use it? 
 * You can just use it as it is, it's run on my server 24/7
 * You can commit changes and improvements
