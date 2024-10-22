@@ -1,17 +1,56 @@
-# Welcome! 
-## This is an open-sourced telegram bot for exchange rates in real time (accessible on @tg_easy_converter_bot)
-### How to use it? 
-* You can just use it as it is, it's run on my server 24/7
-* You can commit changes and improvements
-* You can message me anywhere by @realandrinoff or @andrinoff. or email : realandrinoff@gmail.com
-## You can clone this rep on your device. Then: <br />
-* You need python + pip installed
-* Install dependencies ```pip install -r requirements.txt```
-* Go to files with the main file ```cd ./files```
-* Run the main file ```python main.py```
+<div align="center">
 
-## Credits
-* Main programmer: @andrinoff
-* Helper: @smira
-* Translation:
-  <a href = 'https://linktr.ee/andrinoff'>Andrey Smirnoff </a> (RUS, UKR, ENG) & <a href = 'https://www.facebook.com/nino.iva.9'>Nino Dartsmelia</a> (GEO)
+[![Status](https://img.shields.io/badge/status-under_maintance-white)]()
+[![Version](https://img.shields.io/badge/version-1.1-green)](https://github.com/realandrinoff/telegram-currency-converter-bot/releases/tag/1.1)
+
+
+</div>
+
+---
+
+<p align="center"> An Open Source Telegram bot for currency conversion
+</p>
+
+## 📝 Table of Contents
+
+- [About](#about)
+- [Getting Started](#getting_started)
+- [Deployment](#deployment)
+- [Built Using](#built_using)
+- [Authors](#authors)
+
+## 🧐 About <a name = "about"></a>
+
+I have been programming python bots for 2 years and have been using a very simple library and decided to learn one thats more complex. 
+
+## 🏁 Getting Started <a name = "getting_started"></a>
+
+To install check the requirements and follow steps below
+
+### Prerequisites
+
+Python installed
+
+<br />
+
+pip installed
+
+<br />
+
+### Installing
+
+```pip install -r requirements.txt```
+<br/>
+```python files/main.py```
+
+## ⛏️ Built Using <a name = "built_using"></a>
+
+- Python 3.13
+- CurrencyComAPI (library)
+- telegram-python-bot (library)
+
+## ✍️ Authors <a name = "authors"></a>
+
+- [@andrinoff](https://linktr.ee/andrinoff) - Idea, Initial work, Translation (Ukrainian, Russian, English)
+- [Nino Dartsmelia](https://www.facebook.com/nino.iva.9)
+
