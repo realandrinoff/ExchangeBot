@@ -1,7 +1,7 @@
 <div align="center">
 
 [![Status](https://img.shields.io/badge/status-under_maintance-white)]()
-[![Version](https://img.shields.io/badge/version-1.1-green)](https://github.com/realandrinoff/telegram-currency-converter-bot/releases/tag/1.1)
+[![Version](https://img.shields.io/badge/version-1.1-green)](https://github.com/realandrinoff/telegram-currency-converter-bot/releases/tag/ExchangeBot)
 
 
 </div>
